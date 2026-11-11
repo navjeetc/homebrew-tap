@@ -1,8 +1,8 @@
 class Aiw < Formula
   desc "Local full-text search and recap across your AI assistants"
   homepage "https://github.com/navjeetc/aiw"
-  url "https://github.com/navjeetc/aiw/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "81805096c6d4db50bf6a07adfd1cf0b1a678ee1a6476086df3a4ad214c0aa9c8"
+  url "https://github.com/navjeetc/aiw/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "9809cfd8129ad64489678166898bbddeda3c86ef6bde9d8311f46c661025a891"
   license "MIT"
 
   # aiw is tested on Ruby 3.4; Homebrew's default ruby is 4.x.
@@ -45,6 +45,9 @@ class Aiw < Formula
   end
 
   test do
+    # Catches a release tagged without bumping Aiw::VERSION.
+    assert_equal "aiw #{version}\n", shell_output("#{bin}/aiw --version")
+
     ENV["HOME"] = testpath
     ENV["AIW_DB"] = testpath/"aiw.sqlite3"
     assert_match "Nothing imported yet", shell_output("#{bin}/aiw stats")
