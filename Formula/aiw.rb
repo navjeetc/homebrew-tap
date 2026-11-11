@@ -1,12 +1,19 @@
 class Aiw < Formula
   desc "Local full-text search and recap across your AI assistants"
   homepage "https://github.com/navjeetc/aiw"
-  url "https://github.com/navjeetc/aiw/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "81805096c6d4db50bf6a07adfd1cf0b1a678ee1a6476086df3a4ad214c0aa9c8"
+  url "https://github.com/navjeetc/aiw/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "9809cfd8129ad64489678166898bbddeda3c86ef6bde9d8311f46c661025a891"
   license "MIT"
 
+  # sqlite3's build reads its bundled SQLite's flags through pkg-config. macOS runners happen to have it;
+  # Linux build environments don't.
+  depends_on "pkgconf" => :build
   # aiw is tested on Ruby 3.4; Homebrew's default ruby is 4.x.
   depends_on "ruby@3.4"
+
+  on_linux do
+    depends_on "zlib-ng-compat" # the compiled sqlite3 extension links zlib
+  end
 
   # sqlite3 compiles its bundled SQLite (with FTS5) and needs mini_portile2 to do it.
   resource "mini_portile2" do
@@ -45,6 +52,9 @@ class Aiw < Formula
   end
 
   test do
+    # Catches a release tagged without bumping Aiw::VERSION.
+    assert_equal "aiw #{version}\n", shell_output("#{bin}/aiw --version")
+
     ENV["HOME"] = testpath
     ENV["AIW_DB"] = testpath/"aiw.sqlite3"
     assert_match "Nothing imported yet", shell_output("#{bin}/aiw stats")
