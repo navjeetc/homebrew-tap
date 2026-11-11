@@ -5,11 +5,15 @@ class Aiw < Formula
   sha256 "9809cfd8129ad64489678166898bbddeda3c86ef6bde9d8311f46c661025a891"
   license "MIT"
 
-  # aiw is tested on Ruby 3.4; Homebrew's default ruby is 4.x.
   # sqlite3's build reads its bundled SQLite's flags through pkg-config. macOS runners happen to have it;
   # Linux build environments don't.
   depends_on "pkgconf" => :build
+  # aiw is tested on Ruby 3.4; Homebrew's default ruby is 4.x.
   depends_on "ruby@3.4"
+
+  on_linux do
+    depends_on "zlib-ng-compat" # the compiled sqlite3 extension links zlib
+  end
 
   # sqlite3 compiles its bundled SQLite (with FTS5) and needs mini_portile2 to do it.
   resource "mini_portile2" do
